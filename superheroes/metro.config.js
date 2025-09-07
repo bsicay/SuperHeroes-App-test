@@ -24,7 +24,7 @@ const config = {
       '@theme': path.resolve(__dirname, 'src/theme'),
       '@services': path.resolve(__dirname, 'src/services'),
       '@features': path.resolve(__dirname, 'src/features'),
-      '@native': path.resolve(__dirname, 'src/native'),
+      '@native-modules': path.resolve(__dirname, 'src/native-modules'),
       '@navigation': path.resolve(__dirname, 'src/navigation'),
     },
   },

@@ -12,7 +12,7 @@
       "@theme/*": ["theme/*"],
       "@services/*": ["services/*"],
       "@features/*": ["features/*"],
-      "@native/*": ["native/*"],
+      "@native-modules/*": ["native-modules/*"],
       "@navigation/*": ["navigation/*"]
     }
   },

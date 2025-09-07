@@ -15,7 +15,7 @@ module.exports = {
           '@theme': './src/theme',
           '@services': './src/services',
           '@features': './src/features',
-          '@native': './src/native',
+          '@native-modules': './src/native-modules',
           '@navigation': './src/navigation',
         },
       },

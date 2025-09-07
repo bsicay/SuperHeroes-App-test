@@ -1,6 +1,5 @@
 import { database } from './database';
-import { Team, CreateTeamRequest, UpdateTeamRequest } from '@types/team';
-import { heroesRepository } from './heroesRepository';
+import { Team } from '@types/team';
 
 export class TeamsRepository {
   private db = database.getDatabase();
@@ -8,81 +7,34 @@ export class TeamsRepository {
   /**
    * Crea un nuevo equipo
    */
-  async createTeam(request: CreateTeamRequest): Promise<Team> {
-    const teamId = this.generateTeamId();
-    const memberIds = JSON.stringify(request.memberIds);
+  async createTeam(teamData: Omit<Team, 'id' | 'createdAt' | 'updatedAt'>): Promise<Team> {
+    const id = Date.now().toString(); // Simple ID generation
+    const now = new Date().toISOString();
+    
+    const team: Team = {
+      id,
+      ...teamData,
+      createdAt: now,
+      updatedAt: now,
+    };
 
     const query = `
-      INSERT INTO teams (id, name, description, memberIds, isPublic)
-      VALUES (?, ?, ?, ?, ?)
+      INSERT INTO teams (
+        id, name, description, memberIds, isPublic, createdAt, updatedAt
+      ) VALUES (?, ?, ?, ?, ?, ?, ?)
     `;
 
     await this.db.executeSql(query, [
-      teamId,
-      request.name,
-      request.description || null,
-      memberIds,
-      request.isPublic ? 1 : 0,
+      team.id,
+      team.name,
+      team.description || '',
+      JSON.stringify(team.memberIds),
+      team.isPublic ? 1 : 0,
+      team.createdAt,
+      team.updatedAt,
     ]);
 
-    return this.getTeamById(teamId);
-  }
-
-  /**
-   * Actualiza un equipo existente
-   */
-  async updateTeam(request: UpdateTeamRequest): Promise<Team> {
-    const updates: string[] = [];
-    const values: any[] = [];
-
-    if (request.name !== undefined) {
-      updates.push('name = ?');
-      values.push(request.name);
-    }
-
-    if (request.description !== undefined) {
-      updates.push('description = ?');
-      values.push(request.description);
-    }
-
-    if (request.memberIds !== undefined) {
-      updates.push('memberIds = ?');
-      values.push(JSON.stringify(request.memberIds));
-    }
-
-    if (request.isPublic !== undefined) {
-      updates.push('isPublic = ?');
-      values.push(request.isPublic ? 1 : 0);
-    }
-
-    if (updates.length === 0) {
-      throw new Error('No fields to update');
-    }
-
-    updates.push('updatedAt = CURRENT_TIMESTAMP');
-    values.push(request.id);
-
-    const query = `UPDATE teams SET ${updates.join(', ')} WHERE id = ?`;
-    await this.db.executeSql(query, values);
-
-    return this.getTeamById(request.id);
-  }
-
-  /**
-   * Obtiene un equipo por ID
-   */
-  async getTeamById(teamId: string): Promise<Team> {
-    const [results] = await this.db.executeSql(
-      'SELECT * FROM teams WHERE id = ?',
-      [teamId]
-    );
-
-    if (results.rows.length === 0) {
-      throw new Error('Team not found');
-    }
-
-    const row = results.rows.item(0);
-    return this.mapRowToTeam(row);
+    return team;
   }
 
   /**
@@ -96,61 +48,67 @@ export class TeamsRepository {
     const teams: Team[] = [];
     for (let i = 0; i < results.rows.length; i++) {
       const row = results.rows.item(i);
-      teams.push(await this.mapRowToTeam(row));
+      teams.push(this.mapRowToTeam(row));
     }
 
     return teams;
   }
 
   /**
-   * Obtiene equipos públicos
+   * Obtiene un equipo por ID
    */
-  async getPublicTeams(): Promise<Team[]> {
-    const [results] = await this.db.executeSql(`
-      SELECT * FROM teams WHERE isPublic = 1 ORDER BY createdAt DESC
-    `);
+  async getTeamById(id: string): Promise<Team | null> {
+    const [results] = await this.db.executeSql(
+      'SELECT * FROM teams WHERE id = ?',
+      [id]
+    );
 
-    const teams: Team[] = [];
-    for (let i = 0; i < results.rows.length; i++) {
-      const row = results.rows.item(i);
-      teams.push(await this.mapRowToTeam(row));
+    if (results.rows.length > 0) {
+      return this.mapRowToTeam(results.rows.item(0));
     }
 
-    return teams;
+    return null;
+  }
+
+  /**
+   * Actualiza un equipo
+   */
+  async updateTeam(id: string, teamData: Partial<Team>): Promise<Team> {
+    const existingTeam = await this.getTeamById(id);
+    if (!existingTeam) {
+      throw new Error('Team not found');
+    }
+
+    const updatedTeam: Team = {
+      ...existingTeam,
+      ...teamData,
+      id, // Ensure ID doesn't change
+      updatedAt: new Date().toISOString(),
+    };
+
+    const query = `
+      UPDATE teams SET 
+        name = ?, description = ?, memberIds = ?, isPublic = ?, updatedAt = ?
+      WHERE id = ?
+    `;
+
+    await this.db.executeSql(query, [
+      updatedTeam.name,
+      updatedTeam.description || '',
+      JSON.stringify(updatedTeam.memberIds),
+      updatedTeam.isPublic ? 1 : 0,
+      updatedTeam.updatedAt,
+      id,
+    ]);
+
+    return updatedTeam;
   }
 
   /**
    * Elimina un equipo
    */
-  async deleteTeam(teamId: string): Promise<void> {
-    const [results] = await this.db.executeSql(
-      'DELETE FROM teams WHERE id = ?',
-      [teamId]
-    );
-
-    if (results.rowsAffected === 0) {
-      throw new Error('Team not found');
-    }
-  }
-
-  /**
-   * Verifica si un equipo existe
-   */
-  async teamExists(teamId: string): Promise<boolean> {
-    const [results] = await this.db.executeSql(
-      'SELECT COUNT(*) as count FROM teams WHERE id = ?',
-      [teamId]
-    );
-
-    return results.rows.item(0).count > 0;
-  }
-
-  /**
-   * Obtiene el conteo total de equipos
-   */
-  async getTeamsCount(): Promise<number> {
-    const [results] = await this.db.executeSql('SELECT COUNT(*) as count FROM teams');
-    return results.rows.item(0).count;
+  async deleteTeam(id: string): Promise<void> {
+    await this.db.executeSql('DELETE FROM teams WHERE id = ?', [id]);
   }
 
   /**
@@ -165,42 +123,32 @@ export class TeamsRepository {
     const teams: Team[] = [];
     for (let i = 0; i < results.rows.length; i++) {
       const row = results.rows.item(i);
-      teams.push(await this.mapRowToTeam(row));
+      teams.push(this.mapRowToTeam(row));
     }
 
     return teams;
   }
 
   /**
-   * Genera un ID único para el equipo
+   * Obtiene el conteo total de equipos
    */
-  private generateTeamId(): string {
-    return `team_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+  async getTeamsCount(): Promise<number> {
+    const [results] = await this.db.executeSql('SELECT COUNT(*) as count FROM teams');
+    return results.rows.item(0).count;
   }
 
   /**
    * Mapea una fila de la base de datos a un objeto Team
    */
-  private async mapRowToTeam(row: any): Promise<Team> {
-    const memberIds: number[] = JSON.parse(row.memberIds);
-    const members = [];
-
-    // Obtener los héroes miembros del equipo
-    for (const heroId of memberIds) {
-      const hero = await heroesRepository.getHeroById(heroId);
-      if (hero) {
-        members.push(hero);
-      }
-    }
-
+  private mapRowToTeam(row: any): Team {
     return {
       id: row.id,
       name: row.name,
       description: row.description,
-      members,
-      createdAt: new Date(row.createdAt),
-      updatedAt: new Date(row.updatedAt),
+      memberIds: JSON.parse(row.memberIds),
       isPublic: row.isPublic === 1,
+      createdAt: row.createdAt,
+      updatedAt: row.updatedAt,
     };
   }
 }
