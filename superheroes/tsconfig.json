@@ -1,0 +1,21 @@
+{
+  "extends": "@react-native/typescript-config",
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["*"],
+      "@assets/*": ["assets/*"],
+      "@components/*": ["shared/components/*"],
+      "@hooks/*": ["shared/hooks/*"],
+      "@utils/*": ["shared/utils/*"],
+      "@types/*": ["shared/types/*"],
+      "@theme/*": ["theme/*"],
+      "@services/*": ["services/*"],
+      "@features/*": ["features/*"],
+      "@native/*": ["native/*"],
+      "@navigation/*": ["navigation/*"]
+    }
+  },
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["**/node_modules", "**/Pods"]
+}
