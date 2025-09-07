@@ -4,14 +4,15 @@ import { useNavigation } from '@react-navigation/native';
 import { theme } from '@theme/index';
 import { Hero } from '@types/hero';
 
-import useGetHeroes from '../hooks/useGetHeroes';
+import useHeroesOffline from '../hooks/useHeroesOffline';
 import HeroCard from '../components/HeroCard';
 import SkeletonCard from '@components/SkeletonCard';
 import SearchBar from '@components/SearchBar';
+import OfflineIndicator from '@components/OfflineIndicator';
 
 export default function HeroesListScreen() {
   const navigation = useNavigation();
-  const { heroes, loading, error } = useGetHeroes();
+  const { heroes, loading, error, isOffline, searchHeroes, toggleFavorite } = useHeroesOffline();
   const [searchQuery, setSearchQuery] = useState('');
 
   // Filtrar héroes basado en la búsqueda
@@ -30,8 +31,16 @@ export default function HeroesListScreen() {
     navigation.navigate('HeroDetail', { heroId: hero.id });
   };
 
-  const handleToggleFavorite = (hero: Hero) => {
-    Alert.alert('Favorito', `Agregado/quitar ${hero.name} de favoritos`);
+  const handleToggleFavorite = async (hero: Hero) => {
+    try {
+      const newFavoriteStatus = await toggleFavorite(hero.id);
+      const message = newFavoriteStatus 
+        ? `${hero.name} agregado a favoritos` 
+        : `${hero.name} removido de favoritos`;
+      Alert.alert('Favorito', message);
+    } catch (err) {
+      Alert.alert('Error', 'No se pudo actualizar el favorito');
+    }
   };
 
   const renderHeroCard = ({ item }: { item: Hero }) => (
@@ -74,6 +83,8 @@ export default function HeroesListScreen() {
         onChangeText={setSearchQuery}
         placeholder="Search"
       />
+
+      <OfflineIndicator isOffline={isOffline} />
 
       {loading ? (
         renderSkeleton()

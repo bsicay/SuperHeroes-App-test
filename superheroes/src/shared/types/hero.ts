@@ -51,6 +51,7 @@ export interface Hero {
     md: string;
     lg: string;
   };
+  isFavorite?: boolean;
 }
 
 export interface HeroWithPowerScore extends Hero {

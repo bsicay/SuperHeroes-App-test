@@ -8,7 +8,7 @@ import TeamIcon from '@assets/icons/team.svg';
 import FavoriteIcon from '@assets/icons/favorite.svg';
 
 interface IconProps {
-  name: 'superhero' | 'team' | 'favorite' | 'search';
+  name: 'superhero' | 'team' | 'favorite' | 'search' | 'back';
   size?: number;
   color?: string;
   active?: boolean;
@@ -27,6 +27,8 @@ export default function Icon({ name, size = 24, color, active = false }: IconPro
         return <FavoriteIcon width={size} height={size} fill={iconColor} />;
       case 'search':
         return <SuperheroIcon width={size} height={size} fill={iconColor} />; // Usar superhero como search temporalmente
+      case 'back':
+        return <SuperheroIcon width={size} height={size} fill={iconColor} />; // Usar superhero como back temporalmente
       default:
         return null;
     }

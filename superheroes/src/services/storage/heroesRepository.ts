@@ -182,6 +182,7 @@ export class HeroesRepository {
       work: JSON.parse(row.work),
       connections: JSON.parse(row.connections),
       images: JSON.parse(row.images),
+      isFavorite: row.isFavorite === 1,
     };
   }
 }

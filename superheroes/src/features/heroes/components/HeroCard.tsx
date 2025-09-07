@@ -39,7 +39,6 @@ export default function HeroCard({ hero, onPress, onToggleFavorite, isFavorite }
           </TouchableOpacity>
         </View>
         
-        {/* Columna derecha - Información con fondo */}
         <View style={styles.content}>
           <Text style={styles.name} numberOfLines={1}>
             {hero.name}

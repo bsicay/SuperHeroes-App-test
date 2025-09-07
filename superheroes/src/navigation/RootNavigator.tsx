@@ -118,8 +118,7 @@ export default function RootNavigator() {
         name="HeroDetail" 
         component={HeroDetailScreen}
         options={{
-          title: 'Detalle del Héroe',
-          headerBackTitle: 'Atrás',
+          headerShown: false,
         }}
       />
       <Stack.Screen 
