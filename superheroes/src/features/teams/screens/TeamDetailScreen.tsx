@@ -14,6 +14,7 @@ import useTeamsOffline from '../hooks/useTeamsOffline';
 import { heroesRepository } from '@services/storage/heroesRepository';
 import { Hero } from '@types/hero';
 import HeroCard from '@features/heroes/components/HeroCard';
+import { useFavorites } from '@features/favorites/context/FavoritesContext';
 
 export default function TeamDetailScreen() {
   const route = useRoute();
@@ -21,6 +22,7 @@ export default function TeamDetailScreen() {
   const { teamId } = route.params as { teamId: string };
   
   const { getTeamById, updateTeam } = useTeamsOffline();
+  const { toggleFavorite, isFavorite } = useFavorites();
   const [team, setTeam] = useState<any>(null);
   const [members, setMembers] = useState<Hero[]>([]);
   const [loading, setLoading] = useState(true);
@@ -81,16 +83,7 @@ export default function TeamDetailScreen() {
 
   const handleToggleFavorite = async (hero: Hero) => {
     try {
-      const newFavoriteStatus = await heroesRepository.toggleFavorite(hero.id);
-      
-      // Update local state
-      setMembers(prevMembers => 
-        prevMembers.map(member => 
-          member.id === hero.id 
-            ? { ...member, isFavorite: newFavoriteStatus }
-            : member
-        )
-      );
+      const newFavoriteStatus = await toggleFavorite(hero);
       
       const message = newFavoriteStatus 
         ? `${hero.name} agregado a favoritos` 
@@ -106,7 +99,7 @@ export default function TeamDetailScreen() {
       hero={item}
       onPress={handleHeroPress}
       onToggleFavorite={handleToggleFavorite}
-      isFavorite={item.isFavorite || false}
+      isFavorite={isFavorite(item.id)}
     />
   );
 

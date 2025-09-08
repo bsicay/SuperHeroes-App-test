@@ -7,6 +7,7 @@ import { theme } from './src/theme';
 import { database } from './src/services/storage/database';
 import SplashScreen from './src/features/splash/SplashScreen';
 import RootNavigator from './src/navigation/RootNavigator';
+import { FavoritesProvider } from './src/features/favorites/context/FavoritesContext';
 
 function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -35,13 +36,15 @@ function App() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <NavigationContainer>
-        <StatusBar 
-          barStyle="light-content" 
-          backgroundColor={theme.colors.background.primary}
-        />
-        <RootNavigator />
-      </NavigationContainer>
+      <FavoritesProvider>
+        <NavigationContainer>
+          <StatusBar 
+            barStyle="light-content" 
+            backgroundColor={theme.colors.background.primary}
+          />
+          <RootNavigator />
+        </NavigationContainer>
+      </FavoritesProvider>
     </GestureHandlerRootView>
   );
 }

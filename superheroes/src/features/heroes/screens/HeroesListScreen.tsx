@@ -5,6 +5,7 @@ import { theme } from '@theme/index';
 import { Hero } from '@types/hero';
 
 import useHeroesOffline from '../hooks/useHeroesOffline';
+import { useFavorites } from '@features/favorites/context/FavoritesContext';
 import HeroCard from '../components/HeroCard';
 import SkeletonCard from '@components/SkeletonCard';
 import SearchBar from '@components/SearchBar';
@@ -12,7 +13,8 @@ import OfflineIndicator from '@components/OfflineIndicator';
 
 export default function HeroesListScreen() {
   const navigation = useNavigation();
-  const { heroes, loading, error, isOffline, searchHeroes, toggleFavorite } = useHeroesOffline();
+  const { heroes, loading, error, isOffline, searchHeroes } = useHeroesOffline();
+  const { toggleFavorite, isFavorite } = useFavorites();
   const [searchQuery, setSearchQuery] = useState('');
 
   // Filtrar héroes basado en la búsqueda
@@ -33,7 +35,7 @@ export default function HeroesListScreen() {
 
   const handleToggleFavorite = async (hero: Hero) => {
     try {
-      const newFavoriteStatus = await toggleFavorite(hero.id);
+      const newFavoriteStatus = await toggleFavorite(hero);
       const message = newFavoriteStatus 
         ? `${hero.name} agregado a favoritos` 
         : `${hero.name} removido de favoritos`;
@@ -48,7 +50,7 @@ export default function HeroesListScreen() {
       hero={item}
       onPress={handleHeroPress}
       onToggleFavorite={handleToggleFavorite}
-      isFavorite={false}
+      isFavorite={isFavorite(item.id)}
     />
   );
 

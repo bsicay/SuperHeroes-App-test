@@ -15,6 +15,7 @@ import { theme } from '@theme';
 import { Hero } from '@types/hero';
 import Icon from '@components/Icon';
 import useGetHero from '../hooks/useGetHero';
+import { useFavorites } from '@features/favorites/context/FavoritesContext';
 import { addPowerScoreToHero } from '@utils/powerScore';
 
 const { width, height } = Dimensions.get('window');
@@ -25,7 +26,8 @@ export default function HeroDetailScreen() {
   const insets = useSafeAreaInsets();
   const { heroId } = route.params as { heroId: number };
   
-  const { hero, loading, error, toggleFavorite } = useGetHero(heroId);
+  const { hero, loading, error } = useGetHero(heroId);
+  const { toggleFavorite, isFavorite } = useFavorites();
 
   const handleBackPress = () => {
     navigation.goBack();
@@ -35,7 +37,7 @@ export default function HeroDetailScreen() {
     if (!hero) return;
 
     try {
-      const newFavoriteStatus = await toggleFavorite();
+      const newFavoriteStatus = await toggleFavorite(hero);
       const message = newFavoriteStatus 
         ? `${hero.name} agregado a favoritos` 
         : `${hero.name} removido de favoritos`;
@@ -96,7 +98,7 @@ export default function HeroDetailScreen() {
           <Icon 
             name="favorite" 
             size={20} 
-            color={hero.isFavorite ? '#FFD700' : '#FFFFFF'} 
+            color={isFavorite(hero.id) ? '#FFD700' : '#FFFFFF'} 
           />
         </TouchableOpacity>
       </View>

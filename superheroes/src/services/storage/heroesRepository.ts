@@ -100,6 +100,8 @@ export class HeroesRepository {
    * Obtiene héroes favoritos
    */
   async getFavoriteHeroes(): Promise<Hero[]> {
+    console.log('[HeroesRepository] Getting favorite heroes from database');
+    
     const [results] = await this.db.executeSql(`
       SELECT * FROM heroes WHERE isFavorite = 1 ORDER BY name ASC
     `);
@@ -110,6 +112,7 @@ export class HeroesRepository {
       heroes.push(this.mapRowToHero(row));
     }
 
+    console.log(`[HeroesRepository] Found ${heroes.length} favorite heroes:`, heroes.map(h => h.name));
     return heroes;
   }
 
@@ -117,23 +120,29 @@ export class HeroesRepository {
    * Marca/desmarca un héroe como favorito
    */
   async toggleFavorite(heroId: number): Promise<boolean> {
+    console.log(`[HeroesRepository] Toggling favorite for hero ID: ${heroId}`);
+    
     const [results] = await this.db.executeSql(
       'SELECT isFavorite FROM heroes WHERE id = ?',
       [heroId]
     );
 
     if (results.rows.length === 0) {
+      console.log(`[HeroesRepository] Hero with ID ${heroId} not found in database`);
       throw new Error('Hero not found');
     }
 
     const currentFavorite = results.rows.item(0).isFavorite;
     const newFavorite = currentFavorite ? 0 : 1;
+    
+    console.log(`[HeroesRepository] Hero ${heroId} current favorite: ${currentFavorite}, new favorite: ${newFavorite}`);
 
     await this.db.executeSql(
       'UPDATE heroes SET isFavorite = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?',
       [newFavorite, heroId]
     );
 
+    console.log(`[HeroesRepository] Successfully updated favorite status for hero ${heroId} to ${newFavorite}`);
     return newFavorite === 1;
   }
 
