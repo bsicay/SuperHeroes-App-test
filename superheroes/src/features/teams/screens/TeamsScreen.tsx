@@ -9,13 +9,16 @@ import {
   Alert,
   KeyboardAvoidingView,
   Platform,
+  FlatList,
 } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 import { theme } from '@theme/index';
 import Icon from '@components/Icon';
 import useTeamsOffline from '../hooks/useTeamsOffline';
 import BiometricAuth from '@native-modules/BiometricAuth/BiometricAuth';
 
 export default function TeamsScreen() {
+  const navigation = useNavigation();
   const { teams, loading, createTeam } = useTeamsOffline();
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [teamName, setTeamName] = useState('');
@@ -69,6 +72,26 @@ export default function TeamsScreen() {
     setTeamName('');
   };
 
+  const handleTeamPress = (teamId: string) => {
+    navigation.navigate('TeamDetail', { teamId });
+  };
+
+  const renderTeamItem = ({ item }: { item: any }) => (
+    <TouchableOpacity
+      style={styles.teamItem}
+      onPress={() => handleTeamPress(item.id)}
+      activeOpacity={0.7}
+    >
+      <View style={styles.teamInfo}>
+        <Text style={styles.teamName}>{item.name}</Text>
+        <Text style={styles.teamMembers}>
+          {item.memberIds.length === 0 ? 'No members' : `${item.memberIds.length} members`}
+        </Text>
+      </View>
+      <Icon name="superhero" size={20} color={theme.colors.text.primary} />
+    </TouchableOpacity>
+  );
+
   if (loading) {
     return (
       <View style={styles.loadingContainer}>
@@ -108,8 +131,13 @@ export default function TeamsScreen() {
         </View>
       ) : (
         <View style={styles.teamsList}>
-          {/* TODO: Implementar lista de equipos */}
-          <Text style={styles.comingSoon}>Lista de equipos próximamente...</Text>
+          <FlatList
+            data={teams}
+            renderItem={renderTeamItem}
+            keyExtractor={(item) => item.id}
+            contentContainerStyle={styles.teamsListContent}
+            showsVerticalScrollIndicator={false}
+          />
         </View>
       )}
 
@@ -232,12 +260,32 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: theme.spacing[6],
   },
-  comingSoon: {
+  teamsListContent: {
+    paddingTop: theme.spacing[4],
+  },
+  teamItem: {
+    backgroundColor: '#362C6AA6', // 65% opacity
+    borderRadius: theme.radius.lg,
+    paddingHorizontal: theme.spacing[4],
+    paddingVertical: theme.spacing[4],
+    marginBottom: theme.spacing[3],
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  teamInfo: {
+    flex: 1,
+  },
+  teamName: {
     fontSize: theme.typography.fontSize.lg,
-    fontFamily: theme.typography.fontFamily.medium,
+    fontFamily: theme.typography.fontFamily.bold,
+    color: theme.colors.text.primary,
+    marginBottom: 4,
+  },
+  teamMembers: {
+    fontSize: theme.typography.fontSize.sm,
+    fontFamily: theme.typography.fontFamily.regular,
     color: theme.colors.text.secondary,
-    textAlign: 'center',
-    marginTop: theme.spacing[8],
   },
   modalOverlay: {
     flex: 1,

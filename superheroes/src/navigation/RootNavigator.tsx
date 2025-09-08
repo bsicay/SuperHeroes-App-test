@@ -11,11 +11,15 @@ import HeroesListScreen from '@features/heroes/screens/HeroesListScreen';
 import HeroDetailScreen from '@features/heroes/screens/HeroDetailScreen';
 import FavoritesScreen from '@features/favorites/screens/FavoritesScreen';
 import TeamsScreen from '@features/teams/screens/TeamsScreen';
+import TeamDetailScreen from '@features/teams/screens/TeamDetailScreen';
+import AddMemberScreen from '@features/teams/screens/AddMemberScreen';
 import TeamBuilderScreen from '@features/teams/screens/TeamBuilderScreen';
 
 export type RootStackParamList = {
   MainTabs: undefined;
   HeroDetail: { heroId: number };
+  TeamDetail: { teamId: string };
+  AddMember: { teamId: string };
   TeamBuilder: { teamId?: string };
 };
 
@@ -117,6 +121,20 @@ export default function RootNavigator() {
       <Stack.Screen 
         name="HeroDetail" 
         component={HeroDetailScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen 
+        name="TeamDetail" 
+        component={TeamDetailScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen 
+        name="AddMember" 
+        component={AddMemberScreen}
         options={{
           headerShown: false,
         }}
