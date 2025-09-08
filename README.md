@@ -114,7 +114,7 @@ cd  ..
 
 ```bash
 
-npm run start
+npm run android
 
 ```
 
