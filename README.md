@@ -297,49 +297,11 @@ Power Score: 636.3 / 6.6 = 96.4 ≈ 96
 
   
 
-### Pantalla Principal - Superhéroes
-
-- Lista de superhéroes con diseño de tarjetas
-
-- Barra de búsqueda con iconos personalizados
-
-- Indicador de estado offline
-
-- Navegación por tabs
-
-  
-
-### Pantalla de Detalle
-
-- Imagen grande del superhéroe
-
-- Estadísticas de poder con valores en negrita
-
-- Botones de navegación con iconos personalizados
-
-- Información completa del personaje
-
-  
-
-### Pantalla de Favoritos
-
-- Lista de superhéroes favoritos
-
-- Búsqueda en favoritos
-
-- Estado vacío con mensaje informativo
-
-  
-
-### Pantalla de Equipos
-
-- Lista de equipos creados
-
-- Autenticación biométrica para crear equipos
-
-- Gestión de miembros del equipo
-
-  
+| ![img1](https://github.com/user-attachments/assets/d7c17c1b-437d-4fd9-9970-11f750531f57) | ![img2](https://github.com/user-attachments/assets/98536167-f40f-4e76-a122-7eab890da733) |
+|------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------|
+| ![img3](https://github.com/user-attachments/assets/35467677-3345-45a3-a8f8-67a11f3bcd0c) | ![img4](https://github.com/user-attachments/assets/a5edad71-a175-4a6f-abc4-2b8c3e736afd) |
+| ![img5](https://github.com/user-attachments/assets/af5a5725-62b8-4201-9996-c9e0d3803e82) | ![img6](https://github.com/user-attachments/assets/fdefe415-59a4-4e3a-902c-cab2ac5ff15f) |
+| ![img7](https://github.com/user-attachments/assets/a18b1d97-e334-4599-b1e5-a699dab3b220) | ![img8](https://github.com/user-attachments/assets/736152d4-b8a0-47c2-93ad-5b267f937dc2) |
 
 ## Plan de Optimizaciones
 
@@ -367,41 +329,9 @@ const  usePaginatedHeroes  = (page:  number, limit:  number) => {
 
 ```
 
-  
 
-#### 2. **Virtualización de Listas**
 
-```typescript
-
-// Usar FlatList con getItemLayout optimizado
-
-<FlatList
-
-data={heroes}
-
-getItemLayout={(data, index) => ({
-
-length: ITEM_HEIGHT,
-
-offset: ITEM_HEIGHT * index,
-
-index,
-
-})}
-
-removeClippedSubviews={true}
-
-maxToRenderPerBatch={10}
-
-windowSize={10}
-
-/>
-
-```
-
-  
-
-#### 3. **Base de Datos Optimizada**
+#### 2. **Base de Datos Optimizada**
 
 ```sql
 
@@ -425,7 +355,7 @@ SELECT  *  FROM heroes WHERE powerScore >  80;
 
   
 
-#### 4. **Cache Inteligente**
+#### 3. **Cache Inteligente**
 
 ```typescript
 
@@ -534,57 +464,10 @@ priority={FastImage.priority.normal}
 -  **Integration Tests**: Tests para flujos completos
 
 
-  
-
-#### 2. **Monitoreo y Analytics**
-
-```typescript
-
-// Implementar analytics
-
-import analytics from  '@react-native-firebase/analytics';
 
   
 
-const  trackHeroView  = (heroId:  number) => {
-
-analytics().logEvent('hero_viewed', {
-
-hero_id: heroId,
-
-timestamp: Date.now(),
-
-});
-
-};
-
-```
-
-  
-
-#### 3. **Accesibilidad**
-
-```typescript
-
-// Mejorar accesibilidad
-
-<TouchableOpacity
-
-accessible={true}
-
-accessibilityLabel={`View details for ${hero.name}`}
-
-accessibilityRole="button"
-
-accessibilityHint="Double tap to view hero details"
-
->
-
-```
-
-  
-
-#### 4. **Internacionalización**
+#### 2. **Internacionalización**
 
 ```typescript
 
