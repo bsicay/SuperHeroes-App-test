@@ -36,7 +36,9 @@ export default function SearchBar({
         />
         {value.length > 0 && (
           <TouchableOpacity onPress={handleClear} style={styles.clearButton}>
-            <Icon name="superhero" size={16} color={theme.colors.text.tertiary} />
+            <View style={styles.clearButtonBackground}>
+              <Icon name="close" size={16} color="#000000" />
+            </View>
           </TouchableOpacity>
         )}
       </View>
@@ -68,5 +70,13 @@ const styles = StyleSheet.create({
   },
   clearButton: {
     padding: 4,
+  },
+  clearButtonBackground: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: '#FFFFFF',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

@@ -90,6 +90,11 @@ export default function HeroesListScreen() {
 
       {loading ? (
         renderSkeleton()
+      ) : filteredHeroes.length === 0 ? (
+        <View style={styles.noResultsContainer}>
+          <Text style={styles.noResultsText}>No results found</Text>
+          <Text style={styles.noResultsSubtext}>Try searching by another name</Text>
+        </View>
       ) : (
         <FlatList
           data={filteredHeroes}
@@ -143,6 +148,26 @@ const styles = StyleSheet.create({
     fontSize: theme.typography.fontSize.sm,
     fontFamily: theme.typography.fontFamily.regular,
     color: theme.colors.text.tertiary,
+    textAlign: 'center',
+  },
+  noResultsContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: theme.spacing[6],
+    paddingTop: theme.spacing[8],
+  },
+  noResultsText: {
+    fontSize: theme.typography.fontSize['2xl'],
+    fontFamily: theme.typography.fontFamily.bold,
+    color: theme.colors.text.primary,
+    textAlign: 'center',
+    marginBottom: theme.spacing[2],
+  },
+  noResultsSubtext: {
+    fontSize: theme.typography.fontSize.base,
+    fontFamily: theme.typography.fontFamily.regular,
+    color: theme.colors.text.secondary,
     textAlign: 'center',
   },
 });

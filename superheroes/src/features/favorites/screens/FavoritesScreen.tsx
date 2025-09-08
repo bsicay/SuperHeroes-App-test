@@ -88,12 +88,12 @@ export default function FavoritesScreen() {
       {filteredFavorites.length === 0 ? (
         <View style={styles.emptyState}>
           <Text style={styles.emptyText}>
-            {searchQuery.trim() ? 'No se encontraron favoritos' : 'No tienes favoritos aún'}
+            {searchQuery.trim() ? 'Not found favorites' : 'No favorites yet'}
           </Text>
           <Text style={styles.emptySubtext}>
             {searchQuery.trim() 
-              ? 'Intenta con otro término de búsqueda' 
-              : 'Agrega héroes a favoritos desde la lista de superhéroes'
+              ? 'Try searching with another term' 
+              : 'Add heroes to favorites from the list of superheroes'
             }
           </Text>
         </View>

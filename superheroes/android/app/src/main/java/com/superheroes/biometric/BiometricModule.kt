@@ -104,7 +104,7 @@ class BiometricModule(reactContext: ReactApplicationContext) : ReactContextBaseJ
             val canAuthenticate = biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_WEAK)
             
             val biometryType = if (canAuthenticate == BiometricManager.BIOMETRIC_SUCCESS) {
-                "Fingerprint" // En Android, BiometricPrompt maneja tanto huella como rostro
+                "Fingerprint" // manejo tanto huella como rostro
             } else {
                 "None"
             }

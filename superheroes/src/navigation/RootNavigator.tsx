@@ -6,7 +6,6 @@ import { theme } from '@theme/index';
 import Icon from '@components/Icon';
 
 // Screens
-import HomeScreen from '@features/home/HomeScreen';
 import HeroesListScreen from '@features/heroes/screens/HeroesListScreen';
 import HeroDetailScreen from '@features/heroes/screens/HeroDetailScreen';
 import FavoritesScreen from '@features/favorites/screens/FavoritesScreen';
@@ -46,14 +45,15 @@ function MainTabs() {
           paddingBottom: 8,
           paddingTop: 8,
         },
-        tabBarActiveTintColor: theme.colors.primary[300],
-        tabBarInactiveTintColor: theme.colors.text.tertiary,
+        tabBarActiveTintColor: '#8067FF',
+        tabBarInactiveTintColor: '#FFFFFF',
         tabBarLabelStyle: {
           fontSize: 12,
           fontWeight: '500',
         },
         tabBarIcon: ({ focused, color, size }) => {
           let iconName: 'superhero' | 'team' | 'favorite';
+          let iconColor = 'transparent';
           
           switch (route.name) {
             case 'Heroes':
@@ -69,7 +69,7 @@ function MainTabs() {
               iconName = 'superhero';
           }
           
-          return <Icon name={iconName} size={size} color={color} active={focused} />;
+          return <Icon name={iconName} size={size} color={iconColor} active={focused} showBackground={true} />;
         },
       })}
     >

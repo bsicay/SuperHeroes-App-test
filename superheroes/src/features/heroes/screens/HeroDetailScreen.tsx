@@ -12,7 +12,6 @@ import {
 import { useRoute, useNavigation } from '@react-navigation/native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { theme } from '@theme';
-import { Hero } from '@types/hero';
 import Icon from '@components/Icon';
 import useGetHero from '../hooks/useGetHero';
 import { useFavorites } from '@features/favorites/context/FavoritesContext';
@@ -91,14 +90,17 @@ export default function HeroDetailScreen() {
         </TouchableOpacity>
         
         <TouchableOpacity
-          style={styles.headerButton}
+          style={[
+            styles.headerButton,
+            { backgroundColor: isFavorite(hero.id) ? '#6A4DBC' : '#6A4DBC' }
+          ]}
           onPress={handleFavoritePress}
           activeOpacity={0.7}
         >
           <Icon 
             name="favorite" 
             size={20} 
-            color={isFavorite(hero.id) ? '#FFD700' : '#FFFFFF'} 
+            color={isFavorite(hero.id) ? '#FFFFFF' : 'transparent'} 
           />
         </TouchableOpacity>
       </View>
@@ -123,8 +125,12 @@ export default function HeroDetailScreen() {
           <Text style={styles.heroName}>{hero.name}</Text>
           
           {/* Información básica */}
-          <Text style={styles.realName}>Real Name: {hero.biography.fullName}</Text>
-          <Text style={styles.alterEgos}>Alter egos: {hero.biography.alterEgos}</Text>
+          <Text style={styles.realName}>
+            Real Name: <Text style={styles.boldText}>{hero.biography.fullName}</Text>
+          </Text>
+          <Text style={styles.alterEgos}>
+            Alter egos: <Text style={styles.boldText}>{hero.biography.alterEgos}</Text>
+          </Text>
 
           {/* Stats */}
           <View style={styles.statsContainer}>
@@ -263,18 +269,25 @@ const styles = StyleSheet.create({
   },
   statRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     paddingVertical: 12,
+    paddingRight: 40, // Agregar espacio a la derecha
   },
   statLabel: {
     fontSize: theme.typography.fontSize.base,
     fontFamily: theme.typography.fontFamily.medium,
     color: '#FFFFFF',
+    minWidth: 120, // Ancho mínimo para alineación
+    marginRight: 20, // Espacio entre label y value
   },
   statValue: {
     fontSize: theme.typography.fontSize.base,
-    fontFamily: theme.typography.fontFamily.medium,
+    fontFamily: theme.typography.fontFamily.bold,
+    color: '#FFFFFF',
+  },
+  boldText: {
+    fontFamily: theme.typography.fontFamily.bold,
     color: '#FFFFFF',
   },
   statDivider: {

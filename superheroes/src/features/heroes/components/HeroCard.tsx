@@ -18,14 +18,12 @@ export default function HeroCard({ hero, onPress, onToggleFavorite, isFavorite }
   return (
     <TouchableOpacity style={styles.container} onPress={handlePress} activeOpacity={0.8}>
       <View style={styles.cardContent}>
-        {/* Columna izquierda - Imagen que ocupa toda la altura */}
         <View style={styles.imageContainer}>
           <Image 
             source={{ uri: hero.images.md }} 
             style={styles.image}
             resizeMode="cover"
           />
-          {/* Botón de favorito sobre la imagen */}
           <TouchableOpacity 
             style={styles.favoriteButton} 
             onPress={handleFavoritePress}
@@ -47,7 +45,7 @@ export default function HeroCard({ hero, onPress, onToggleFavorite, isFavorite }
             {hero.biography.fullName}
           </Text>
           <View style={styles.powerContainer}>
-            <Icon name="superhero" size={16} color={theme.colors.primary[300]} />
+            <Icon name="superhero" size={16} color="#FFD700" />
             <Text style={styles.powerText}>
               {hero.powerstats.strength} / 100
             </Text>

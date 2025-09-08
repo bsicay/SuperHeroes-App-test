@@ -28,7 +28,6 @@ export default function SplashScreen({ onFinish }: SplashScreenProps) {
       }),
     ]).start();
 
-    // Timer para cambiar a la siguiente pantalla
     const timer = setTimeout(() => {
       onFinish();
     }, 2500);
