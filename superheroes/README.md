@@ -1,85 +1,760 @@
-# SuperHeroes App - Prueba Técnica Startrack
 
-Aplicación completa de superhéroes desarrollada con React Native, TypeScript y Turbo Modules para autenticación biométrica.
+# 🦸 SuperHeroes App
 
-## 🚀 Características Implementadas
+  
 
-### ✅ Requerimientos Técnicos Completados
+Una aplicación móvil React Native que permite explorar, gestionar y crear equipos de superhéroes con funcionalidades offline y autenticación biométrica.
 
-- **React Native + TypeScript**: Aplicación desarrollada con las tecnologías requeridas
-- **Turbo Module Biométrico**: Implementado con la firma exacta requerida
-- **Base de Datos Local**: SQLite para almacenamiento offline
-- **API de Superhéroes**: Integración con superhero-api
-- **Cálculo de Poder**: Fórmula personalizada para score de poder
-- **Funcionalidad Offline**: App funciona sin conexión
+  
 
-### 🏗️ Arquitectura Profesional
+## 📋 Tabla de Contenidos
 
-Estructura feature-first con separación clara de responsabilidades:
-- `src/features/` - Funcionalidades por dominio
-- `src/services/` - API, storage y autenticación
-- `src/shared/` - Componentes y utilidades reutilizables
-- `src/native/` - Turbo Module biométrico
+  
 
-### 🔐 Turbo Module Biométrico
+- [Requisitos](#-requisitos)
 
-**Implementación Android (Kotlin)**:
-- Usa `androidx.biometric.BiometricPrompt`
-- Firma exacta requerida: `authenticate(onSuccess, onFailure)`
-- Manejo robusto de errores
-- Integración con sistema de equipos
+- [Instalación](#-instalación)
 
-### 💾 Base de Datos Local
+- [Ejecución](#-ejecución)
 
-**SQLite con Repositorios**:
-- Cache de superhéroes desde API
-- Búsqueda optimizada con índices
-- Sistema de favoritos
-- Gestión de equipos con autenticación biométrica
+- [Arquitectura](#-arquitectura)
 
-## 📊 Plan de Optimizaciones
+- [Funcionalidades](#-funcionalidades)
+
+- [Cálculo de Power Score](#-cálculo-de-power-score)
+
+- [Capturas de Pantalla](#-capturas-de-pantalla)
+
+- [Plan de Optimizaciones](#-plan-de-optimizaciones)
+
+- [Tecnologías Utilizadas](#-tecnologías-utilizadas)
+
+- [Estructura del Proyecto](#-estructura-del-proyecto)
+
+  
+
+## 🎯 Requisitos
+
+  
+
+### Funcionalidades Principales
+
+-  **Lista de Superhéroes**: Visualización de todos los superhéroes con búsqueda en tiempo real
+
+-  **Detalle de Superhéroe**: Vista detallada con estadísticas de poder y información completa
+
+-  **Sistema de Favoritos**: Marcar/desmarcar superhéroes como favoritos con persistencia local
+
+-  **Gestión de Equipos**: Crear, editar y gestionar equipos de superhéroes
+
+-  **Autenticación Biométrica**: Protección de equipos con huella dactilar/face ID
+
+-  **Funcionalidad Offline**: La app funciona sin conexión a internet usando base de datos local
+
+  
+
+### Requisitos Técnicos
+
+-  **React Native 0.81.1**
+
+-  **Node.js v20.19.4**
+
+-  **Android SDK** (para desarrollo Android)
+
+-  **Dispositivo con sensor biométrico** 
+
+  
+
+## 🚀 Instalación
+
+  
+
+1.  **Clonar el repositorio**
+
+```bash
+
+git  clone https://github.com/bsicay/SuperHeroes-App-test.git
+
+cd  superheroes
+
+```
+
+  
+
+2.  **Instalar dependencias**
+
+```bash
+
+npm  install
+
+```
+
+  
+  
+
+4.  **Configurar dependencias nativas (iOS)**
+
+```bash
+
+cd  ios
+
+pod  install
+
+cd  ..
+
+```
+
+  
+
+## Ejecución
+
+  
+
+### Android
+
+```bash
+
+npm run start
+
+```
+
+
+##  Arquitectura
+
+  
+
+La aplicación sigue los principios de **Clean Architecture** y **Feature-First Architecture**:
+
+  
+
+### Patrones Implementados
+
+  
+
+#### 1. **Feature-First Architecture**
+
+```
+
+src/
+
+├── features/
+
+│ ├── heroes/ # Módulo de superhéroes
+
+│ ├── favorites/ # Módulo de favoritos
+
+│ ├── teams/ # Módulo de equipos
+
+│ └── splash/ # Módulo de splash screen
+
+```
+
+  
+
+#### 2. **Repository Pattern**
+
+-  **HeroesRepository**: Gestión de datos de superhéroes
+
+-  **TeamsRepository**: Gestión de datos de equipos
+
+-  **Database**: Capa de abstracción para SQLite
+
+  
+
+#### 3. **Service Layer Pattern**
+
+-  **BiometricAuth**: Servicio de autenticación biométrica
+
+-  **API Services**: Servicios para comunicación con APIs externas
+
+  
+
+#### 4. **Context Pattern**
+
+-  **FavoritesContext**: Estado global para favoritos
+
+-  **Inyección de dependencias implícita** a través de contextos
+
+  
+
+#### 5. **Custom Hooks Pattern**
+
+-  **useHeroesOffline**: Gestión de héroes con funcionalidad offline
+
+-  **useFavoritesOffline**: Gestión de favoritos
+
+-  **useTeamsOffline**: Gestión de equipos
+
+-  **useApiFetch**: Hook base para peticiones HTTP
+
+  
+
+### Capas de la Arquitectura
+
+  
+
+```
+
+┌─────────────────────────────────────┐
+
+│ Presentation Layer │
+
+│ (Screens, Components, Navigation) │
+
+├─────────────────────────────────────┤
+
+│ Business Layer │
+
+│ (Hooks, Context, Services) │
+
+├─────────────────────────────────────┤
+
+│ Data Layer │
+
+│ (Repositories, Database, API) │
+
+└─────────────────────────────────────┘
+
+```
+
+  
+##  Cálculo de Power Score
+
+
+  
+
+### Fórmula de Cálculo
+
+  
+
+```typescript
+
+Power Score =  Σ(Stat × Weight) /  Σ(Weights)
+
+```
+
+  
+
+### Pesos Asignados
+
+-  **Intelligence**: 1.2x (Más importante para estrategia)
+
+-  **Strength**: 1.0x (Peso base)
+
+-  **Speed**: 1.0x (Peso base)
+
+-  **Durability**: 1.0x (Peso base)
+
+-  **Power**: 1.3x (Más importante para combate)
+
+-  **Combat**: 1.1x (Importante para habilidades de pelea)
+
+  
+
+### Ejemplo de Cálculo
+
+```
+
+Superman:
+
+- Intelligence: 94 × 1.2 = 112.8
+
+- Strength: 100 × 1.0 = 100.0
+
+- Speed: 100 × 1.0 = 100.0
+
+- Durability: 100 × 1.0 = 100.0
+
+- Power: 100 × 1.3 = 130.0
+
+- Combat: 85 × 1.1 = 93.5
+
+  
+
+Total Weighted: 636.3
+
+Total Weights: 6.6
+
+Power Score: 636.3 / 6.6 = 96.4 ≈ 96
+
+```
+
+  
+
+### Manejo de Valores Especiales
+
+-  **"null"** → 0
+
+-  **"infinite"** → 100
+
+-  **Valores inválidos** → 0
+
+-  **Límite máximo** → 100
+
+  
+
+## Capturas de Pantalla
+
+  
+
+### Pantalla Principal - Superhéroes
+
+- Lista de superhéroes con diseño de tarjetas
+
+- Barra de búsqueda con iconos personalizados
+
+- Indicador de estado offline
+
+- Navegación por tabs
+
+  
+
+### Pantalla de Detalle
+
+- Imagen grande del superhéroe
+
+- Estadísticas de poder con valores en negrita
+
+- Botones de navegación con iconos personalizados
+
+- Información completa del personaje
+
+  
+
+### Pantalla de Favoritos
+
+- Lista de superhéroes favoritos
+
+- Búsqueda en favoritos
+
+- Estado vacío con mensaje informativo
+
+  
+
+### Pantalla de Equipos
+
+- Lista de equipos creados
+
+- Autenticación biométrica para crear equipos
+
+- Gestión de miembros del equipo
+
+  
+
+## Plan de Optimizaciones
+
+  
 
 ### Escalabilidad para Más Superhéroes
 
-**Problema**: Si la cantidad aumenta significativamente (10,000+)
+  
 
-**Soluciones**:
-1. **Paginación**: Carga por lotes de 50 elementos
-2. **Índices de DB**: Optimización de consultas de búsqueda
-3. **Virtualización**: FlatList con `getItemLayout`
-4. **Cache Inteligente**: TTL y limpieza automática
+#### 1. **Paginación y Lazy Loading**
 
-### Performance y Velocidad
+```typescript
 
-**Si se reporta lentitud**:
-1. **Lazy Loading**: react-native-fast-image
-2. **Memoización**: React.memo en componentes
-3. **Debounce**: En búsquedas (300ms)
-4. **Background Sync**: Sincronización automática
+// Implementar paginación en la API
 
-### Optimizaciones de Base de Datos
+const  usePaginatedHeroes  = (page:  number, limit:  number) => {
 
-1. **Índices Compuestos**: Para búsquedas complejas
-2. **Consultas Optimizadas**: LIMIT/OFFSET para paginación
-3. **Cache de Consultas**: Map para consultas frecuentes
+// Cargar héroes por lotes
 
-### Aspectos Pendientes
+// Implementar infinite scroll
 
-**Implementados**:
-- ✅ Turbo Module biométrico funcional
-- ✅ Base de datos local con SQLite
-- ✅ API de superhéroes integrada
-- ✅ Sistema de navegación completo
-- ✅ Cálculo de poder personalizado
+// Cache inteligente por páginas
 
-**Mejoras Futuras**:
-1. **iOS Turbo Module**: Face ID/Touch ID
-2. **Animaciones**: react-native-reanimated
-3. **Testing**: Jest + Detox
-4. **Analytics**: Firebase integration
-5. **Funcionalidades**: Comparaciones, batallas
-6. **Optimizaciones**: GraphQL, CDN
+};
 
-## 🎯 Conclusión
+```
 
-Aplicación profesional y escalable que cumple todos los requerimientos de la prueba técnica, con arquitectura sólida y plan de optimizaciones detallado para crecimiento futuro.
+  
+
+#### 2. **Virtualización de Listas**
+
+```typescript
+
+// Usar FlatList con getItemLayout optimizado
+
+<FlatList
+
+data={heroes}
+
+getItemLayout={(data, index) => ({
+
+length: ITEM_HEIGHT,
+
+offset: ITEM_HEIGHT * index,
+
+index,
+
+})}
+
+removeClippedSubviews={true}
+
+maxToRenderPerBatch={10}
+
+windowSize={10}
+
+/>
+
+```
+
+  
+
+#### 3. **Base de Datos Optimizada**
+
+```sql
+
+-- Índices adicionales para búsquedas rápidas
+
+CREATE  INDEX  idx_heroes_power_score  ON heroes(powerScore);
+
+CREATE  INDEX  idx_heroes_alignment  ON heroes(biography_alignment);
+
+CREATE  INDEX  idx_heroes_publisher  ON heroes(biography_publisher);
+
+  
+
+-- Particionado por rangos de poder
+
+CREATE  TABLE  heroes_high_power  AS
+
+SELECT  *  FROM heroes WHERE powerScore >  80;
+
+```
+
+  
+
+#### 4. **Cache Inteligente**
+
+```typescript
+
+// Implementar cache con TTL
+
+const cacheConfig = {
+
+heroes: { ttl:  3600000 }, // 1 hora
+
+favorites: { ttl:  86400000 }, // 24 horas
+
+teams: { ttl:  86400000 }, // 24 horas
+
+};
+
+```
+
+  
+
+### Optimizaciones de Rendimiento
+
+  
+
+#### 1. **Memoización de Componentes**
+
+```typescript
+
+const HeroCard = React.memo(({ hero, onPress, onToggleFavorite }) => {
+
+// Componente optimizado
+
+}, (prevProps, nextProps) => {
+
+return prevProps.hero.id === nextProps.hero.id &&
+
+prevProps.hero.isFavorite === nextProps.hero.isFavorite;
+
+});
+
+```
+
+  
+
+#### 2. **Debounce en Búsqueda**
+
+```typescript
+
+const  useDebouncedSearch  = (query:  string, delay:  number) => {
+
+const [debouncedQuery, setDebouncedQuery] =  useState(query);
+
+useEffect(() => {
+
+const timer =  setTimeout(() => {
+
+setDebouncedQuery(query);
+
+}, delay);
+
+return () =>  clearTimeout(timer);
+
+}, [query, delay]);
+
+return debouncedQuery;
+
+};
+
+```
+
+  
+
+#### 3. **Optimización de Imágenes**
+
+```typescript
+
+// Implementar lazy loading de imágenes
+
+import FastImage from  'react-native-fast-image';
+
+  
+
+<FastImage
+
+source={{ uri: hero.images.md }}
+
+style={styles.image}
+
+resizeMode={FastImage.resizeMode.cover}
+
+priority={FastImage.priority.normal}
+
+/>
+
+```
+
+  
+
+### Aspectos Pendientes y Mejoras Futuras
+
+  
+
+#### 1. **Testing**
+
+-  **Unit Tests**: Implementar tests para utils y hooks
+
+-  **Integration Tests**: Tests para flujos completos
+
+
+  
+
+#### 2. **Monitoreo y Analytics**
+
+```typescript
+
+// Implementar analytics
+
+import analytics from  '@react-native-firebase/analytics';
+
+  
+
+const  trackHeroView  = (heroId:  number) => {
+
+analytics().logEvent('hero_viewed', {
+
+hero_id: heroId,
+
+timestamp: Date.now(),
+
+});
+
+};
+
+```
+
+  
+
+#### 3. **Accesibilidad**
+
+```typescript
+
+// Mejorar accesibilidad
+
+<TouchableOpacity
+
+accessible={true}
+
+accessibilityLabel={`View details for ${hero.name}`}
+
+accessibilityRole="button"
+
+accessibilityHint="Double tap to view hero details"
+
+>
+
+```
+
+  
+
+#### 4. **Internacionalización**
+
+```typescript
+
+// Implementar i18n
+
+import i18n from  'i18next';
+
+  
+
+const translations = {
+
+en: {
+
+heroes:  'Superheroes',
+
+favorites:  'Favorites',
+
+teams:  'Teams',
+
+},
+
+es: {
+
+heroes:  'Superhéroes',
+
+favorites:  'Favoritos',
+
+teams:  'Equipos',
+
+},
+
+};
+
+```
+  
+
+##  Tecnologías Utilizadas
+
+  
+
+### Frontend
+
+-  **React Native 0.81.1** - Framework principal
+
+-  **TypeScript** - Tipado estático
+
+-  **React Navigation 6** - Navegación
+
+-  **React Native SVG** - Iconos vectoriales
+
+-  **React Native Linear Gradient** - Gradientes
+
+-  **React Native Fast Image** - Optimización de imágenes
+
+  
+
+### Backend & Storage
+
+-  **SQLite** - Base de datos local
+
+-  **React Native SQLite Storage** - Integración SQLite
+
+-  **NetInfo** - Detección de conectividad
+
+  
+
+### Autenticación
+
+-  **Turbo Modules** - Módulos nativos personalizados
+
+-  **Android BiometricPrompt** - Autenticación biométrica Android
+
+  
+
+### Desarrollo
+
+-  **ESLint** - Linting
+
+-  **Prettier** - Formateo de código
+
+-  **Babel** - Transpilación
+
+-  **Metro** - Bundler
+
+  
+
+##  Estructura del Proyecto
+
+  
+
+```
+
+src/
+
+├── app/ # Configuración de la app
+
+├── assets/ # Recursos estáticos
+
+│ ├── fonts/ # Fuentes personalizadas
+
+│ ├── icons/ # Iconos SVG
+
+│ ├── images/ # Imágenes PNG/JPG
+
+│ └── lottie/ # Animaciones Lottie
+
+├── features/ # Módulos por funcionalidad
+
+│ ├── heroes/ # Módulo de superhéroes
+
+│ ├── favorites/ # Módulo de favoritos
+
+│ ├── teams/ # Módulo de equipos
+
+│ └── splash/ # Pantalla de inicio
+
+├── navigation/ # Configuración de navegación
+
+├── native-modules/ # Módulos nativos personalizados
+
+├── services/ # Servicios y APIs
+
+│ ├── auth/ # Autenticación
+
+│ └── storage/ # Persistencia de datos
+
+├── shared/ # Componentes y utilidades compartidas
+
+│ ├── components/ # Componentes reutilizables
+
+│ ├── hooks/ # Hooks personalizados
+
+│ ├── types/ # Definiciones de tipos
+
+│ └── utils/ # Utilidades
+
+├── state/ # Gestión de estado global
+
+└── theme/ # Sistema de diseño
+
+├── colors.ts # Paleta de colores
+
+├── typography.ts # Tipografías
+
+├── spacing.ts # Espaciado
+
+├── radius.ts # Border radius
+
+└── shadows.ts # Sombras
+
+```
+
+  
+
+## 📄 Licencia
+
+  
+
+Este proyecto está bajo la Licencia MIT. Ver el archivo [LICENSE](LICENSE) para más detalles.
+
+  
+
+## 👨‍💻 Autor
+
+  
+Brandon Sicay. 
+Desarrollado como parte de una prueba técnica para demostrar habilidades en React Native, TypeScript y desarrollo móvil.
+
+  
+
+---
+
+  
